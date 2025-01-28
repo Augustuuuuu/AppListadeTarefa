@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light {
+            background-color: white;
+            color: black;
+        }
+
+        body.dark {
+            background-color: black;
+            color: white;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: inherit;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tasks {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f4f4f4;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .task.completed {
+            text-decoration: line-through;
+            background-color: #d1d1d1;
+        }
+
+        .task.dark {
+            background-color: #333;
+        }
+
+        .task.dark.completed {
+            background-color: #555;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        button.print {
+            padding: 5px 10px;
+            border: 1px solid currentColor;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body class="light">
+    <div class="container">
+        <div class="header">
+            <h1>Todo App</h1>
+            <label>
+                <input type="checkbox" id="themeSwitch"> Dark Mode
+            </label>
+        </div>
+        <div class="task-input">
+            <input type="text" id="newTask" placeholder="Add a new task..." style="width: 100%; padding: 10px;">
+        </div>
+        <ul class="tasks" id="taskList"></ul>
+        <div style="text-align: right; margin-top: 10px;">
+            <button class="print" onclick="window.print()">Print</button>
+        </div>
+    </div>
+
+    <script>
+        const body = document.body;
+        const themeSwitch = document.getElementById('themeSwitch');
+        const newTaskInput = document.getElementById('newTask');
+        const taskList = document.getElementById('taskList');
+
+        themeSwitch.addEventListener('change', () => {
+            body.className = themeSwitch.checked ? 'dark' : 'light';
+            updateTaskThemes();
+        });
+
+        newTaskInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && newTaskInput.value.trim()) {
+                const task = document.createElement('li');
+                task.className = `task ${themeSwitch.checked ? 'dark' : ''}`;
+                task.innerHTML = `
+                    <span>${newTaskInput.value.trim()}</span>
+                    <button onclick="toggleTask(this)">✔</button>
+                `;
+                taskList.appendChild(task);
+                newTaskInput.value = '';
+            }
+        });
+
+        function toggleTask(button) {
+            const task = button.parentElement;
+            task.classList.toggle('completed');
+        }
+
+        function updateTaskThemes() {
+            const tasks = document.querySelectorAll('.task');
+            tasks.forEach(task => {
+                if (themeSwitch.checked) {
+                    task.classList.add('dark');
+                } else {
+                    task.classList.remove('dark');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
